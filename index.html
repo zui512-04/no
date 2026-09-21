@@ -1,0 +1,3147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>午夜公寓：404號房</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#07080d;
+    color:#e8e9ef;
+    font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;
+    min-height:100vh;
+}
+
+button{
+    font-family:inherit;
+}
+
+#game{
+    min-height:100vh;
+}
+
+/* =========================
+   開始畫面
+========================= */
+
+.start{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    background:
+        radial-gradient(circle at center,#171a29 0%,#090a10 45%,#050509 100%);
+}
+
+.start-box{
+    width:min(700px,100%);
+}
+
+.start-small{
+    color:#777d92;
+    letter-spacing:8px;
+    margin-bottom:25px;
+}
+
+.start h1{
+    font-size:clamp(55px,10vw,110px);
+    letter-spacing:20px;
+    font-weight:400;
+    margin-left:20px;
+}
+
+.start-sub{
+    color:#969bad;
+    letter-spacing:5px;
+    margin:15px 0 55px;
+}
+
+.start-line{
+    width:80px;
+    height:1px;
+    background:#555b70;
+    margin:0 auto 35px;
+}
+
+.start-desc{
+    color:#777d8e;
+    line-height:2;
+    margin-bottom:45px;
+}
+
+.main-btn{
+    background:#151827;
+    color:#f2f2f5;
+    border:1px solid #555c70;
+    padding:15px 55px;
+    border-radius:5px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.main-btn:hover{
+    background:#242a40;
+    transform:translateY(-2px);
+}
+
+/* =========================
+   遊戲框架
+========================= */
+
+.game{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.top{
+    height:68px;
+    border-bottom:1px solid #242735;
+    background:#0c0e16;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 35px;
+}
+
+.logo{
+    letter-spacing:4px;
+    font-size:17px;
+}
+
+.top-right{
+    display:flex;
+    gap:25px;
+    color:#888ea2;
+    font-size:13px;
+}
+
+.content{
+    width:min(950px,100%);
+    margin:auto;
+    flex:1;
+    padding:65px 30px 100px;
+}
+
+.chapter{
+    color:#666d82;
+    letter-spacing:5px;
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.title{
+    font-size:36px;
+    letter-spacing:5px;
+    font-weight:400;
+    margin-bottom:20px;
+}
+
+.description{
+    color:#969bad;
+    line-height:2.1;
+    font-size:16px;
+    margin-bottom:40px;
+    max-width:750px;
+}
+
+.story{
+    color:#d7d9e1;
+    font-size:17px;
+    line-height:2.3;
+    max-width:760px;
+    margin-bottom:35px;
+}
+
+.story strong{
+    color:#ffffff;
+}
+
+.choice-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-width:700px;
+}
+
+.choice{
+    width:100%;
+    padding:17px 20px;
+    background:#11141f;
+    border:1px solid #292d3c;
+    color:#dedfe6;
+    text-align:left;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.choice:hover{
+    background:#191d2b;
+    border-color:#60677a;
+    transform:translateX(5px);
+}
+
+.choice.locked{
+    color:#555b6c;
+    cursor:not-allowed;
+}
+
+.choice.danger:hover{
+    border-color:#704e5a;
+}
+
+/* =========================
+   底部
+========================= */
+
+.bottom{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:62px;
+    background:#0b0d14;
+    border-top:1px solid #242735;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    z-index:20;
+}
+
+.bottom button{
+    background:transparent;
+    color:#777d90;
+    border:0;
+    padding:0 20px;
+    cursor:pointer;
+}
+
+.bottom button:hover{
+    color:white;
+}
+
+/* =========================
+   彈窗
+========================= */
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    z-index:100;
+}
+
+.modal{
+    width:min(600px,100%);
+    max-height:80vh;
+    overflow:auto;
+    background:#10121c;
+    border:1px solid #303546;
+    border-radius:8px;
+    padding:30px;
+}
+
+.modal h2{
+    margin-bottom:25px;
+    font-weight:400;
+    letter-spacing:3px;
+}
+
+.modal p{
+    color:#aeb2c0;
+    line-height:2;
+}
+
+.close{
+    margin-top:25px;
+    padding:10px 25px;
+    background:#191d2b;
+    color:white;
+    border:1px solid #383e52;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+/* =========================
+   線索 / 道具
+========================= */
+
+.item{
+    padding:15px;
+    border:1px solid #292d3c;
+    margin-bottom:10px;
+    border-radius:5px;
+}
+
+.item-name{
+    color:#e2e4eb;
+    margin-bottom:5px;
+}
+
+.item-desc{
+    color:#777e91;
+    font-size:14px;
+}
+
+/* =========================
+   結局
+========================= */
+
+.ending{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    text-align:center;
+    background:radial-gradient(circle,#151827,#07080d 65%);
+}
+
+.ending-box{
+    width:min(720px,100%);
+}
+
+.ending-number{
+    color:#666d82;
+    letter-spacing:6px;
+    margin-bottom:20px;
+}
+
+.ending h1{
+    font-size:42px;
+    font-weight:400;
+    letter-spacing:5px;
+    margin-bottom:30px;
+}
+
+.ending p{
+    color:#aeb2c0;
+    line-height:2.3;
+    white-space:pre-line;
+    margin-bottom:40px;
+}
+
+/* =========================
+   手機
+========================= */
+
+@media(max-width:700px){
+
+    .top{
+        padding:0 18px;
+    }
+
+    .logo{
+        font-size:13px;
+        letter-spacing:2px;
+    }
+
+    .top-right{
+        gap:10px;
+        font-size:11px;
+    }
+
+    .content{
+        padding:45px 20px 100px;
+    }
+
+    .title{
+        font-size:28px;
+    }
+
+    .story{
+        font-size:16px;
+    }
+
+    .bottom button{
+        padding:0 10px;
+        font-size:12px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="game"></div>
+
+<script>
+
+/* =====================================================
+   《午夜公寓：404號房》
+   完整單檔版
+===================================================== */
+
+/* =========================
+   遊戲資料
+========================= */
+
+const game = {
+
+    scene:"start",
+
+    chapter:0,
+
+    time:0,
+
+    clues:[],
+
+    items:[],
+
+    flags:{
+        sawMailbox:false,
+        sawElevator:false,
+        entered404:false,
+
+        sawPhoto:false,
+        readDiary:false,
+        checkedClock:false,
+
+        kitchen:false,
+        bedroom:false,
+        bathroom:false,
+
+        foundNote417:false,
+        foundKey417:false,
+
+        metGirl:false,
+        trustedGirl:false,
+        rejectedGirl:false,
+
+        openedBox:false,
+        sawMirror:false,
+
+        foundBasement:false,
+        openedArchive:false,
+        learnedTruth:false,
+
+        rememberedChildhood:false,
+        rememberedAccident:false,
+
+        destroyedPhoto:false,
+        keptPhoto:false,
+
+        calledPolice:false,
+        stayedUntilMorning:false,
+
+        secretFound:false
+    },
+
+    ending:null
+};
+
+
+/* =========================
+   工具
+========================= */
+
+function hasClue(name){
+    return game.clues.includes(name);
+}
+
+function hasItem(name){
+    return game.items.includes(name);
+}
+
+function addClue(name){
+    if(!hasClue(name)){
+        game.clues.push(name);
+    }
+}
+
+function addItem(name){
+    if(!hasItem(name)){
+        game.items.push(name);
+    }
+}
+
+function advanceTime(minutes){
+
+    game.time += minutes;
+
+    if(game.time >= 60){
+        game.time -= 60;
+    }
+}
+
+
+/* =========================
+   主畫面
+========================= */
+
+function render(){
+
+    switch(game.scene){
+
+        case "start":
+            startScreen();
+            break;
+
+        case "intro":
+            intro();
+            break;
+
+        case "hall":
+            hall();
+            break;
+
+        case "room404":
+            room404();
+            break;
+
+        case "kitchen":
+            kitchen();
+            break;
+
+        case "bedroom":
+            bedroom();
+            break;
+
+        case "bathroom":
+            bathroom();
+            break;
+
+        case "417":
+            room417();
+            break;
+
+        case "girl":
+            girl();
+            break;
+
+        case "basement":
+            basement();
+            break;
+
+        case "archive":
+            archive();
+            break;
+
+        case "final":
+            finalScene();
+            break;
+
+        default:
+            startScreen();
+    }
+}
+
+
+/* =========================
+   開始畫面
+========================= */
+
+function startScreen(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="start">
+
+            <div class="start-box">
+
+                <div class="start-small">
+                    MIDNIGHT APARTMENT
+                </div>
+
+                <h1>404</h1>
+
+                <div class="start-sub">
+                    午夜公寓
+                </div>
+
+                <div class="start-line"></div>
+
+                <div class="start-desc">
+                    有些房間從來沒有真正離開過。<br>
+                    有些人，也從來沒有真正忘記你。
+                </div>
+
+                <button class="main-btn" onclick="newGame()">
+                    開始遊戲
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   新遊戲
+========================= */
+
+function newGame(){
+
+    game.scene="intro";
+    game.chapter=0;
+    game.time=0;
+
+    game.clues=[];
+    game.items=[];
+
+    game.flags={
+        sawMailbox:false,
+        sawElevator:false,
+        entered404:false,
+        sawPhoto:false,
+        readDiary:false,
+        checkedClock:false,
+        kitchen:false,
+        bedroom:false,
+        bathroom:false,
+        foundNote417:false,
+        foundKey417:false,
+        metGirl:false,
+        trustedGirl:false,
+        rejectedGirl:false,
+        openedBox:false,
+        sawMirror:false,
+        foundBasement:false,
+        openedArchive:false,
+        learnedTruth:false,
+        rememberedChildhood:false,
+        rememberedAccident:false,
+        destroyedPhoto:false,
+        keptPhoto:false,
+        calledPolice:false,
+        stayedUntilMorning:false,
+        secretFound:false
+    };
+
+    game.ending=null;
+
+    render();
+}
+
+
+/* =========================
+   開場
+========================= */
+
+function intro(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            <div class="top">
+
+                <div class="logo">
+                    午夜公寓
+                </div>
+
+                <div class="top-right">
+                    <span>00:00</span>
+                </div>
+
+            </div>
+
+            <main class="content">
+
+                <div class="chapter">
+                    PROLOGUE
+                </div>
+
+                <h1 class="title">
+                    沒有人記得的房間
+                </h1>
+
+                <div class="story">
+
+                    你是在晚上十一點四十七分收到那則訊息的。
+
+                    <br><br>
+
+                    沒有寄件人。
+
+                    <br>
+
+                    沒有電話號碼。
+
+                    <br><br>
+
+                    只有短短一句話。
+
+                    <br><br>
+
+                    <strong>「如果你還記得，就到404號房。」</strong>
+
+                    <br><br>
+
+                    你盯著螢幕看了很久。
+
+                    <br><br>
+
+                    奇怪的是，你明明不認識這個地方，卻在看見
+                    「404」這個數字的瞬間，想起了一個模糊的畫面。
+
+                    <br><br>
+
+                    一個女孩。
+
+                    <br>
+
+                    一扇關上的門。
+
+                    <br>
+
+                    還有一個停在午夜的時鐘。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="goHall()">
+                        前往午夜公寓
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   大廳
+========================= */
+
+function goHall(){
+
+    game.scene="hall";
+    game.chapter=1;
+
+    render();
+}
+
+
+function hall(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("一樓大廳")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    CHAPTER 01
+                </div>
+
+                <h1 class="title">
+                    一樓大廳
+                </h1>
+
+                <div class="description">
+
+                    公寓比想像中安靜。
+
+                    <br>
+
+                    牆上的燈有幾盞已經壞掉，
+                    剩下的光線只能勉強照亮入口。
+
+                    <br><br>
+
+                    前台沒有人。
+
+                    電梯停在四樓。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="mailbox()">
+                        查看信箱
+                    </button>
+
+                    <button class="choice" onclick="elevator()">
+                        查看電梯
+                    </button>
+
+                    <button class="choice" onclick="go404()">
+                        搭電梯前往四樓
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   信箱
+========================= */
+
+function mailbox(){
+
+    game.flags.sawMailbox=true;
+
+    addClue("404號信箱");
+
+    openModal(
+        "404號信箱",
+        `
+
+        你在最角落找到了一排老舊信箱。
+
+        <br><br>
+
+        其中一格貼著一張已經泛黃的紙。
+
+        <br><br>
+
+        <strong>404</strong>
+
+        <br><br>
+
+        紙條下面寫著你的名字。
+
+        <br><br>
+
+        問題是——
+
+        <br>
+
+        你從來沒有住過這裡。
+
+        `
+    );
+}
+
+
+/* =========================
+   電梯
+========================= */
+
+function elevator(){
+
+    game.flags.sawElevator=true;
+
+    addClue("電梯異常");
+
+    openModal(
+        "電梯",
+        `
+
+        電梯門上的數字正在閃爍。
+
+        <br><br>
+
+        4樓。
+
+        <br><br>
+
+        但在樓層顯示器旁，
+        你看見一行幾乎被刮掉的字。
+
+        <br><br>
+
+        <strong>「00:17」</strong>
+
+        <br><br>
+
+        你不知道為什麼。
+
+        但看見這個時間時，
+        你的手指突然變得冰冷。
+        `
+    );
+}
+
+
+/* =========================
+   404
+========================= */
+
+function go404(){
+
+    game.flags.entered404=true;
+    game.scene="room404";
+    game.chapter=2;
+
+    render();
+}
+
+
+function room404(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("404號房")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    CHAPTER 02
+                </div>
+
+                <h1 class="title">
+                    404號房
+                </h1>
+
+                <div class="description">
+
+                    房門沒有鎖。
+
+                    <br><br>
+
+                    你輕輕推開門。
+
+                    <br>
+
+                    房間裡沒有灰塵。
+
+                    <br>
+
+                    彷彿有人剛剛才離開。
+
+                    <br><br>
+
+                    更奇怪的是——
+
+                    <br>
+
+                    這裡的每一樣東西，
+                    都讓你產生一種不該有的熟悉感。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="photo()">
+                        查看桌上的照片
+                    </button>
+
+                    <button class="choice" onclick="diary()">
+                        查看床邊的日記
+                    </button>
+
+                    <button class="choice" onclick="clock()">
+                        查看牆上的時鐘
+                    </button>
+
+                    <button class="choice" onclick="goKitchen()">
+                        前往廚房
+                    </button>
+
+                    <button class="choice" onclick="goBedroom()">
+                        前往臥室
+                    </button>
+
+                    <button class="choice" onclick="goBathroom()">
+                        前往浴室
+                    </button>
+
+                    <button class="choice" onclick="waitHere()">
+                        坐下來，什麼也不做
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   照片
+========================= */
+
+function photo(){
+
+    game.flags.sawPhoto=true;
+
+    addClue("舊照片");
+
+    openModal(
+        "舊照片",
+        `
+
+        照片裡有兩個孩子。
+
+        <br><br>
+
+        一個是你。
+
+        <br>
+
+        另一個女孩站在你身旁。
+
+        <br><br>
+
+        她笑得很開心。
+
+        <br><br>
+
+        可是你完全不記得她。
+
+        <br><br>
+
+        你翻到照片背面。
+
+        <br><br>
+
+        上面只有一句話：
+
+        <br><br>
+
+        <strong>「沈妍，永遠不要忘記。」</strong>
+
+        `,
+        "回到房間"
+    );
+}
+
+
+/* =========================
+   日記
+========================= */
+
+function diary(){
+
+    game.flags.readDiary=true;
+
+    addClue("殘缺日記");
+
+    openModal(
+        "殘缺日記",
+        `
+
+        書頁已經泛黃。
+
+        <br><br>
+
+        大部分內容被撕掉了。
+
+        <br><br>
+
+        你只能看見最後一頁。
+
+        <br><br>
+
+        <strong>
+        「如果有一天他忘記了我……」
+        </strong>
+
+        <br><br>
+
+        後面的文字被水浸透。
+
+        <br><br>
+
+        只有頁角留下了一串數字：
+
+        <br><br>
+
+        <strong>417</strong>
+
+        `,
+        "回到房間"
+    );
+}
+
+
+/* =========================
+   時鐘
+========================= */
+
+function clock(){
+
+    game.flags.checkedClock=true;
+
+    addClue("停住的時鐘");
+
+    openModal(
+        "牆上的時鐘",
+        `
+
+        秒針沒有動。
+
+        <br><br>
+
+        時間停在：
+
+        <br><br>
+
+        <strong style="font-size:30px;">00:17</strong>
+
+        <br><br>
+
+        你盯著那個數字。
+
+        <br><br>
+
+        一段記憶突然閃過。
+
+        <br><br>
+
+        黑暗。
+
+        <br>
+
+        一個女孩在哭。
+
+        <br>
+
+        還有你自己的聲音。
+
+        <br><br>
+
+        「不要關門……」
+
+        `,
+        "回到房間"
+    );
+}
+
+
+/* =========================
+   廚房
+========================= */
+
+function goKitchen(){
+
+    game.flags.kitchen=true;
+    game.scene="kitchen";
+
+    advanceTime(5);
+
+    render();
+}
+
+
+function kitchen(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("廚房")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    404號房
+                </div>
+
+                <h1 class="title">
+                    廚房
+                </h1>
+
+                <div class="description">
+
+                    水槽裡放著一只杯子。
+
+                    <br>
+
+                    杯中的水還是溫的。
+
+                    <br><br>
+
+                    可是整間房子裡，
+                    你沒有看見任何人。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="glass()">
+                        查看杯子
+                    </button>
+
+                    <button class="choice" onclick="fridge()">
+                        查看冰箱
+                    </button>
+
+                    <button class="choice" onclick="back404()">
+                        回到客廳
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function glass(){
+
+    addClue("溫熱的水");
+
+    openModal(
+        "玻璃杯",
+        `
+
+        杯子上有一個很小的刻字。
+
+        <br><br>
+
+        <strong>Y</strong>
+
+        <br><br>
+
+        你想起照片裡女孩的名字。
+
+        <br>
+
+        沈妍。
+
+        `
+    );
+}
+
+
+function fridge(){
+
+    addClue("冰箱紙條");
+    game.flags.foundNote417=true;
+
+    openModal(
+        "冰箱",
+        `
+
+        冰箱裡幾乎什麼都沒有。
+
+        <br><br>
+
+        只有一張磁鐵壓著的紙條。
+
+        <br><br>
+
+        <strong>
+        「如果你真的回來了，就去417。」
+        </strong>
+
+        <br><br>
+
+        紙條背面寫著：
+
+        <br><br>
+
+        <strong>鑰匙在你最不願意看的地方。</strong>
+
+        `
+    );
+}
+
+
+/* =========================
+   臥室
+========================= */
+
+function goBedroom(){
+
+    game.flags.bedroom=true;
+    game.scene="bedroom";
+
+    advanceTime(5);
+
+    render();
+}
+
+
+function bedroom(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("臥室")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    404號房
+                </div>
+
+                <h1 class="title">
+                    臥室
+                </h1>
+
+                <div class="description">
+
+                    書桌上放著一本沒有封面的筆記本。
+
+                    <br><br>
+
+                    衣櫃緊閉。
+
+                    <br>
+
+                    床底似乎藏著什麼。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="desk()">
+                        查看書桌
+                    </button>
+
+                    <button class="choice" onclick="wardrobe()">
+                        打開衣櫃
+                    </button>
+
+                    <button class="choice" onclick="underBed()">
+                        查看床底
+                    </button>
+
+                    <button class="choice" onclick="back404()">
+                        回到客廳
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function desk(){
+
+    addClue("沈妍的筆記");
+
+    openModal(
+        "書桌",
+        `
+
+        筆記本裡寫滿了同一個名字。
+
+        <br><br>
+
+        沈妍。
+
+        <br><br>
+
+        最後一頁只有一句：
+
+        <br><br>
+
+        <strong>
+        「他會忘記，是因為有人希望他忘記。」
+        </strong>
+
+        `
+    );
+}
+
+
+function wardrobe(){
+
+    addClue("衣櫃");
+
+    openModal(
+        "衣櫃",
+        `
+
+        裡面掛著一件兒童外套。
+
+        <br><br>
+
+        口袋裡有一把生鏽的鑰匙。
+
+        <br><br>
+
+        鑰匙上刻著：
+
+        <strong>417</strong>
+
+        `,
+        "拿走鑰匙",
+        function(){
+
+            addItem("417號鑰匙");
+            game.flags.foundKey417=true;
+
+        }
+    );
+}
+
+
+function underBed(){
+
+    addClue("床底錄音筆");
+
+    openModal(
+        "床底",
+        `
+
+        你摸到一個小小的錄音筆。
+
+        <br><br>
+
+        按下播放。
+
+        <br><br>
+
+        裡面傳出一個女孩的聲音。
+
+        <br><br>
+
+        <strong>
+        「如果你聽到這個，代表你真的回來了。」
+        </strong>
+
+        <br><br>
+
+        錄音到這裡突然中斷。
+
+        `,
+        "收下錄音筆",
+        function(){
+            addItem("舊錄音筆");
+        }
+    );
+}
+
+
+/* =========================
+   浴室
+========================= */
+
+function goBathroom(){
+
+    game.flags.bathroom=true;
+    game.scene="bathroom";
+
+    advanceTime(5);
+
+    render();
+}
+
+
+function bathroom(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("浴室")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    404號房
+                </div>
+
+                <h1 class="title">
+                    浴室
+                </h1>
+
+                <div class="description">
+
+                    鏡面蒙著一層霧。
+
+                    <br><br>
+
+                    你伸手擦去霧氣。
+
+                    <br>
+
+                    鏡子裡的自己看起來有些陌生。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="mirror()">
+                        擦乾鏡子
+                    </button>
+
+                    <button class="choice" onclick="cabinet()">
+                        查看藥櫃
+                    </button>
+
+                    <button class="choice" onclick="back404()">
+                        回到客廳
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function mirror(){
+
+    game.flags.sawMirror=true;
+
+    addClue("鏡面字跡");
+
+    openModal(
+        "鏡子",
+        `
+
+        霧氣散開後，
+        鏡子上慢慢浮出一行字。
+
+        <br><br>
+
+        <strong>
+        「你不是第一次來。」
+        </strong>
+
+        <br><br>
+
+        你的手停在半空。
+
+        <br><br>
+
+        緊接著，又有一行字出現。
+
+        <br><br>
+
+        <strong>
+        「她一直在等你。」
+        </strong>
+
+        `
+    );
+}
+
+
+function cabinet(){
+
+    addClue("藥櫃");
+
+    openModal(
+        "藥櫃",
+        `
+
+        藥櫃裡沒有藥。
+
+        <br><br>
+
+        只有一張醫院收據。
+
+        <br><br>
+
+        日期：
+
+        <strong>十年前。</strong>
+
+        <br><br>
+
+        姓名被人刻意撕掉。
+
+        `
+    );
+}
+
+
+/* =========================
+   回404
+========================= */
+
+function back404(){
+
+    game.scene="room404";
+    render();
+}
+
+
+/* =========================
+   等待
+========================= */
+
+function waitHere(){
+
+    advanceTime(10);
+
+    if(!game.flags.metGirl && game.time>=30){
+
+        game.scene="girl";
+
+    }else{
+
+        openModal(
+            "等待",
+            `
+            你坐在房間裡。
+
+            <br><br>
+
+            四周安靜得不像有人居住。
+
+            <br><br>
+
+            你開始懷疑，
+            自己是不是不該來這裡。
+            `
+        );
+
+    }
+
+    render();
+}
+
+
+/* =========================
+   417
+========================= */
+
+function go417(){
+
+    if(!hasItem("417號鑰匙")){
+
+        openModal(
+            "417號房",
+            `
+            門鎖著。
+
+            <br><br>
+
+            你需要一把鑰匙。
+            `
+        );
+
+        return;
+    }
+
+    game.scene="417";
+    game.chapter=3;
+
+    render();
+}
+
+
+function room417(){
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("417號房")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    CHAPTER 03
+                </div>
+
+                <h1 class="title">
+                    417號房
+                </h1>
+
+                <div class="description">
+
+                    鑰匙插入鎖孔。
+
+                    <br><br>
+
+                    門開了。
+
+                    <br><br>
+
+                    裡面沒有家具。
+
+                    <br>
+
+                    只有一面牆。
+
+                    <br><br>
+
+                    牆上貼滿了照片。
+
+                    <br><br>
+
+                    全都是你。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="photosWall()">
+                        查看照片牆
+                    </button>
+
+                    <button class="choice" onclick="findBasement()">
+                        查看地板
+                    </button>
+
+                    <button class="choice" onclick="leave417()">
+                        離開417
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function photosWall(){
+
+    addClue("照片牆");
+
+    game.flags.rememberedChildhood=true;
+
+    openModal(
+        "照片牆",
+        `
+
+        第一張照片。
+
+        <br>
+
+        你和沈妍。
+
+        <br><br>
+
+        第二張。
+
+        <br>
+
+        你們坐在404號房的地板。
+
+        <br><br>
+
+        第三張。
+
+        <br>
+
+        一群陌生的大人站在你們身後。
+
+        <br><br>
+
+        最後一張照片沒有拍人。
+
+        <br>
+
+        只有一扇關上的門。
+
+        <br><br>
+
+        你突然想起來了。
+
+        <br><br>
+
+        <strong>
+        十年前，你曾經來過這裡。
+        </strong>
+
+        `
+    );
+}
+
+
+function findBasement(){
+
+    addClue("地下室入口");
+
+    game.flags.foundBasement=true;
+
+    openModal(
+        "地板",
+        `
+
+        地板的一塊木板可以移動。
+
+        <br><br>
+
+        下面是一道向下延伸的樓梯。
+
+        <br><br>
+
+        空氣裡傳來潮濕的味道。
+
+        <br><br>
+
+        你想起了一件事。
+
+        <br><br>
+
+        <strong>
+        十年前，你曾經從這裡逃出去。
+        </strong>
+        `,
+        "走下地下室",
+        function(){
+
+            game.scene="basement";
+            render();
+
+        }
+    );
+}
+
+
+function leave417(){
+
+    game.scene="room404";
+    render();
+}
+
+
+/* =========================
+   沈妍
+========================= */
+
+function girl(){
+
+    game.flags.metGirl=true;
+
+    game.chapter=4;
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("？？？")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    CHAPTER 04
+                </div>
+
+                <h1 class="title">
+                    她
+                </h1>
+
+                <div class="story">
+
+                    你回過頭。
+
+                    <br><br>
+
+                    房間門口站著一個女孩。
+
+                    <br><br>
+
+                    她穿著和照片裡一模一樣的衣服。
+
+                    <br><br>
+
+                    你看著她。
+
+                    <br>
+
+                    她也看著你。
+
+                    <br><br>
+
+                    很久以後，她才輕聲開口。
+
+                    <br><br>
+
+                    <strong>
+                    「你終於還是回來了。」
+                    </strong>
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="trustGirl()">
+                        「妳是誰？」
+                    </button>
+
+                    <button class="choice" onclick="questionGirl()">
+                        「我認識妳嗎？」
+                    </button>
+
+                    <button class="choice danger" onclick="rejectGirl()">
+                        後退，不相信她
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function trustGirl(){
+
+    game.flags.trustedGirl=true;
+
+    addClue("沈妍的真相");
+
+    openModal(
+        "沈妍",
+        `
+
+        女孩看著你。
+
+        <br><br>
+
+        「我叫沈妍。」
+
+        <br><br>
+
+        「你以前一直叫我阿妍。」
+
+        <br><br>
+
+        她停了一下。
+
+        <br><br>
+
+        「十年前，那些人想讓你忘記這裡。」
+
+        <br><br>
+
+        「但我沒有忘。」
+
+        <br><br>
+
+        「所以我一直在等你。」
+
+        `,
+        "繼續聽",
+        function(){
+
+            game.scene="room404";
+            render();
+
+        }
+    );
+}
+
+
+function questionGirl(){
+
+    addClue("沈妍");
+
+    openModal(
+        "沈妍",
+        `
+
+        她沒有回答。
+
+        <br><br>
+
+        只是低頭看著自己的手。
+
+        <br><br>
+
+        「你真的一點都不記得了嗎？」
+
+        <br><br>
+
+        你沒有說話。
+
+        <br><br>
+
+        她最後只告訴你：
+
+        <br><br>
+
+        <strong>
+        「去417。」
+        </strong>
+        `,
+        "知道了",
+        function(){
+
+            game.scene="room404";
+            render();
+
+        }
+    );
+}
+
+
+function rejectGirl(){
+
+    game.flags.rejectedGirl=true;
+
+    addClue("陌生女孩");
+
+    openModal(
+        "她離開了",
+        `
+
+        你後退了一步。
+
+        <br><br>
+
+        女孩沒有追上來。
+
+        <br><br>
+
+        她只是很安靜地看著你。
+
+        <br><br>
+
+        「原來你真的把我忘了。」
+
+        <br><br>
+
+        她轉身離開。
+
+        <br><br>
+
+        地上留下了一把鑰匙。
+
+        `,
+        "拿起鑰匙",
+        function(){
+
+            addItem("417號鑰匙");
+            game.flags.foundKey417=true;
+
+            game.scene="room404";
+            render();
+
+        }
+    );
+}
+
+
+/* =========================
+   地下室
+========================= */
+
+function basement(){
+
+    game.chapter=5;
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("地下室")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    CHAPTER 05
+                </div>
+
+                <h1 class="title">
+                    被藏起來的十年
+                </h1>
+
+                <div class="description">
+
+                    地下室比你想像中還要深。
+
+                    <br><br>
+
+                    牆邊放著一排舊檔案。
+
+                    <br>
+
+                    最裡面有一個鐵櫃。
+
+                    <br><br>
+
+                    鐵櫃上寫著：
+
+                    <br><br>
+
+                    <strong>404 PROJECT</strong>
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="archive()">
+                        打開檔案櫃
+                    </button>
+
+                    <button class="choice" onclick="basementRecorder()">
+                        尋找錄音
+                    </button>
+
+                    <button class="choice" onclick="leaveBasement()">
+                        離開地下室
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+function archive(){
+
+    game.flags.openedArchive=true;
+    game.flags.learnedTruth=true;
+
+    addClue("十年前的事故");
+
+    game.scene="archive";
+
+    render();
+}
+
+
+function basementRecorder(){
+
+    addItem("十年前錄音");
+
+    openModal(
+        "錄音",
+        `
+
+        錄音裡傳來幾個成年人的聲音。
+
+        <br><br>
+
+        「孩子的記憶已經受到影響。」
+
+        <br><br>
+
+        「只要不要讓他回到404，
+        他就不會想起來。」
+
+        <br><br>
+
+        接著是一陣很長的沉默。
+
+        <br><br>
+
+        最後。
+
+        <br>
+
+        是沈妍的聲音。
+
+        <br><br>
+
+        <strong>
+        「那我留下來。」
+        </strong>
+        `
+    );
+}
+
+
+function leaveBasement(){
+
+    game.scene="room404";
+    render();
+}
+
+
+/* =========================
+   檔案
+========================= */
+
+function archive(){
+
+    game.flags.openedArchive=true;
+    game.flags.learnedTruth=true;
+    game.flags.rememberedAccident=true;
+
+    addClue("十年前的事故");
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("檔案")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    TRUTH
+                </div>
+
+                <h1 class="title">
+                    真相
+                </h1>
+
+                <div class="story">
+
+                    十年前。
+
+                    <br><br>
+
+                    404號房並不是普通的房間。
+
+                    <br><br>
+
+                    那裡曾經發生過一場事故。
+
+                    <br><br>
+
+                    你和沈妍都是當時的目擊者。
+
+                    <br><br>
+
+                    為了讓你忘記那段記憶，
+                    有人刻意將所有與404有關的紀錄藏起來。
+
+                    <br><br>
+
+                    沈妍沒有忘記。
+
+                    <br><br>
+
+                    她一直想辦法讓你重新想起來。
+
+                    <br><br>
+
+                    而今晚。
+
+                    <br>
+
+                    是她最後一次等你。
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="rememberAll()">
+                        我想起來了
+                    </button>
+
+                    <button class="choice" onclick="destroyEvidence()">
+                        把檔案全部撕掉
+                    </button>
+
+                    <button class="choice" onclick="keepEvidence()">
+                        把檔案帶走
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   真相選擇
+========================= */
+
+function rememberAll(){
+
+    game.flags.rememberedAccident=true;
+
+    game.scene="final";
+
+    render();
+}
+
+
+function destroyEvidence(){
+
+    game.flags.destroyedPhoto=true;
+
+    game.scene="final";
+
+    render();
+}
+
+
+function keepEvidence(){
+
+    addItem("十年前檔案");
+
+    game.scene="final";
+
+    render();
+}
+
+
+/* =========================
+   最終場景
+========================= */
+
+function finalScene(){
+
+    game.chapter=6;
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="game">
+
+            ${topBar("00:17")}
+
+            <main class="content">
+
+                <div class="chapter">
+                    FINAL CHAPTER
+                </div>
+
+                <h1 class="title">
+                    00:17
+                </h1>
+
+                <div class="story">
+
+                    牆上的時鐘突然重新開始走動。
+
+                    <br><br>
+
+                    00:16。
+
+                    <br>
+
+                    00:17。
+
+                    <br>
+
+                    00:18。
+
+                    <br><br>
+
+                    十年前停下的時間，
+                    終於再次往前。
+
+                    <br><br>
+
+                    你站在404號房裡。
+
+                    <br>
+
+                    沈妍就在門外。
+
+                    <br><br>
+
+                    你終於明白。
+
+                    <br><br>
+
+                    今晚真正需要做出的選擇，
+                    從來不是「要不要留下」。
+
+                    <br><br>
+
+                    而是——
+
+                    <br>
+
+                    <strong>
+                    你究竟願不願意記住。
+                    </strong>
+
+                </div>
+
+                <div class="choice-list">
+
+                    <button class="choice" onclick="endingLeave()">
+                        離開公寓
+                    </button>
+
+                    <button class="choice" onclick="endingStay()">
+                        留在404
+                    </button>
+
+                    <button class="choice" onclick="endingTruth()">
+                        把真相帶出去
+                    </button>
+
+                    <button class="choice" onclick="endingGirl()">
+                        回頭找沈妍
+                    </button>
+
+                    <button class="choice" onclick="endingForget()">
+                        選擇忘記
+                    </button>
+
+                </div>
+
+            </main>
+
+            ${bottomBar()}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   結局
+========================= */
+
+function endingLeave(){
+
+    if(game.flags.learnedTruth){
+
+        showEnding(
+            "END 01",
+            "離開",
+            `
+
+            你走出了公寓。
+
+            <br><br>
+
+            沒有人追你。
+
+            <br>
+
+            沒有人阻止你。
+
+            <br><br>
+
+            只是離開之前，
+            你最後回頭看了一眼四樓。
+
+            <br><br>
+
+            404號房的燈熄滅了。
+
+            <br><br>
+
+            你沒有再回去。
+
+            <br><br>
+
+            可是這一次。
+
+            <br>
+
+            你記得沈妍。
+
+            `
+        );
+
+    }else{
+
+        showEnding(
+            "END 01",
+            "離開",
+            `
+
+            你離開了公寓。
+
+            <br><br>
+
+            可是在走出大門的瞬間，
+            你突然忘記了自己為什麼來這裡。
+
+            <br><br>
+
+            手機上的訊息也消失了。
+
+            <br><br>
+
+            只有一張照片留在相簿裡。
+
+            <br><br>
+
+            你不認識照片裡的女孩。
+
+            `
+        );
+    }
+}
+
+
+function endingStay(){
+
+    game.flags.stayedUntilMorning=true;
+
+    showEnding(
+        "END 02",
+        "留下",
+        `
+
+        你沒有離開。
+
+        <br><br>
+
+        午夜過去。
+
+        <br>
+
+        凌晨一點。
+
+        <br>
+
+        兩點。
+
+        <br><br>
+
+        天快亮的時候，
+        沈妍坐在窗邊。
+
+        <br><br>
+
+        「你還會走嗎？」
+
+        <br><br>
+
+        你沒有回答。
+
+        <br><br>
+
+        404號房第一次等到了天亮。
+
+        <br><br>
+
+        而這一次。
+
+        <br>
+
+        沒有人再被留下。
+        `
+    );
+}
+
+
+function endingTruth(){
+
+    if(!game.flags.learnedTruth){
+
+        showEnding(
+            "END 03",
+            "未完成的真相",
+            `
+
+            你想把真相帶出去。
+
+            <br><br>
+
+            可是你手裡沒有完整的答案。
+
+            <br><br>
+
+            有些記憶仍然缺失。
+
+            <br><br>
+
+            也許下一次回來，
+            你才能真正看見十年前發生的一切。
+            `
+        );
+
+        return;
+    }
+
+    showEnding(
+        "END 03",
+        "真相",
+        `
+
+        你帶著檔案離開了404。
+
+        <br><br>
+
+        十年前被藏起來的事情，
+        終於重新回到陽光下。
+
+        <br><br>
+
+        你不知道這會帶來什麼。
+
+        <br><br>
+
+        但至少這一次。
+
+        <br>
+
+        沒有人可以再替你決定
+        你應該記得什麼。
+        `
+    );
+}
+
+
+function endingGirl(){
+
+    if(!game.flags.metGirl){
+
+        showEnding(
+            "END 04",
+            "錯過",
+            `
+
+            你回頭了。
+
+            <br><br>
+
+            可是身後什麼都沒有。
+
+            <br><br>
+
+            只有走廊盡頭的一扇門。
+
+            <br><br>
+
+            門牌上寫著：
+
+            <br><br>
+
+            404。
+
+            <br><br>
+
+            你突然想起。
+
+            <br>
+
+            她曾經在這裡等過你。
+
+            `
+        );
+
+        return;
+    }
+
+    showEnding(
+        "END 04",
+        "再見，沈妍",
+        `
+
+        你回頭找她。
+
+        <br><br>
+
+        沈妍站在走廊盡頭。
+
+        <br><br>
+
+        你沒有問她為什麼一直等。
+
+        <br>
+
+        她也沒有問你為什麼現在才回來。
+
+        <br><br>
+
+        有些事情，
+        其實不需要答案。
+
+        <br><br>
+
+        「這一次，你還會忘記嗎？」
+
+        <br><br>
+
+        你搖頭。
+
+        `
+    );
+}
+
+
+function endingForget(){
+
+    showEnding(
+        "END 05",
+        "忘記",
+        `
+
+        你閉上眼睛。
+
+        <br><br>
+
+        告訴自己。
+
+        <br>
+
+        這些都不是真的。
+
+        <br><br>
+
+        404不存在。
+
+        <br>
+
+        沈妍不存在。
+
+        <br>
+
+        十年前也不存在。
+
+        <br><br>
+
+        當你再次睜開眼睛時，
+        你已經站在公寓外。
+
+        <br><br>
+
+        手機上只有一條新訊息。
+
+        <br><br>
+
+        「晚安。」
+
+        <br><br>
+
+        寄件人：
+
+        <br>
+
+        沈妍。
+        `
+    );
+}
+
+
+/* =========================
+   隱藏結局
+========================= */
+
+function secretEnding(){
+
+    game.flags.secretFound=true;
+
+    showEnding(
+        "END 06",
+        "404",
+        `
+
+        你沒有選擇離開。
+
+        <br><br>
+
+        也沒有選擇留下。
+
+        <br><br>
+
+        你只是走到了404號房的門前。
+
+        <br><br>
+
+        然後伸手。
+
+        <br><br>
+
+        門自己開了。
+
+        <br><br>
+
+        房間裡沒有任何東西。
+
+        <br>
+
+        沒有照片。
+
+        <br>
+
+        沒有日記。
+
+        <br>
+
+        沒有沈妍。
+
+        <br><br>
+
+        只有牆上的一個數字。
+
+        <br><br>
+
+        <strong style="font-size:40px;">
+        404
+        </strong>
+
+        <br><br>
+
+        你突然明白。
+
+        <br><br>
+
+        從頭到尾，
+        404從來都不是一個房間。
+
+        <br><br>
+
+        它是你忘記的那段記憶。
+
+        `
+    );
+}
+
+
+/* =========================
+   結局顯示
+========================= */
+
+function showEnding(number,title,text){
+
+    game.ending=number;
+
+    saveGame();
+
+    document.getElementById("game").innerHTML = `
+
+        <div class="ending">
+
+            <div class="ending-box">
+
+                <div class="ending-number">
+                    ${number}
+                </div>
+
+                <h1>
+                    ${title}
+                </h1>
+
+                <p>
+                    ${text}
+                </p>
+
+                <button
+                    class="main-btn"
+                    onclick="newGame()">
+                    重新開始
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   UI
+========================= */
+
+function topBar(place){
+
+    return `
+
+        <div class="top">
+
+            <div class="logo">
+                ${place}
+            </div>
+
+            <div class="top-right">
+
+                <span>
+                    00:${String(game.time).padStart(2,"0")}
+                </span>
+
+                <span>
+                    線索 ${game.clues.length}
+                </span>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+function bottomBar(){
+
+    return `
+
+        <div class="bottom">
+
+            <button onclick="showBag()">
+                🎒 道具
+            </button>
+
+            <button onclick="showClues()">
+                🔎 線索
+            </button>
+
+            <button onclick="saveGame()">
+                💾 存檔
+            </button>
+
+            <button onclick="loadGame()">
+                ↩ 讀檔
+            </button>
+
+            <button onclick="confirmRestart()">
+                ↻ 重來
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   道具
+========================= */
+
+function showBag(){
+
+    let content="";
+
+    if(game.items.length===0){
+
+        content="目前沒有道具。";
+
+    }else{
+
+        game.items.forEach(item=>{
+
+            content += `
+
+                <div class="item">
+
+                    <div class="item-name">
+                        ${item}
+                    </div>
+
+                    <div class="item-desc">
+                        目前持有的道具
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+    }
+
+    openModal("道具",content);
+}
+
+
+/* =========================
+   線索
+========================= */
+
+function showClues(){
+
+    let content="";
+
+    if(game.clues.length===0){
+
+        content="目前沒有發現任何線索。";
+
+    }else{
+
+        game.clues.forEach(clue=>{
+
+            content += `
+
+                <div class="item">
+
+                    <div class="item-name">
+                        ${clue}
+                    </div>
+
+                    <div class="item-desc">
+                        你目前記得的線索。
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+    }
+
+    openModal("線索",content);
+}
+
+
+/* =========================
+   彈窗
+========================= */
+
+function openModal(title,text,buttonText="關閉",callback=null){
+
+    const modal=document.createElement("div");
+
+    modal.className="modal-bg";
+
+    modal.innerHTML=`
+
+        <div class="modal">
+
+            <h2>
+                ${title}
+            </h2>
+
+            <p>
+                ${text}
+            </p>
+
+            <button class="close">
+                ${buttonText}
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector(".close").onclick=function(){
+
+        modal.remove();
+
+        if(callback){
+            callback();
+        }
+
+        render();
+
+    };
+}
+
+
+/* =========================
+   存檔
+========================= */
+
+function saveGame(){
+
+    const data=JSON.stringify(game);
+
+    localStorage.setItem(
+        "midnight404_save",
+        data
+    );
+
+    if(game.scene!=="start" && game.scene!=="final"){
+
+        alert("遊戲已存檔。");
+
+    }
+}
+
+
+/* =========================
+   讀檔
+========================= */
+
+function loadGame(){
+
+    const data=localStorage.getItem(
+        "midnight404_save"
+    );
+
+    if(!data){
+
+        alert("目前沒有存檔。");
+        return;
+
+    }
+
+    const saved=JSON.parse(data);
+
+    Object.assign(game,saved);
+
+    render();
+}
+
+
+/* =========================
+   重來
+========================= */
+
+function confirmRestart(){
+
+    const yes=confirm(
+        "確定要重新開始嗎？\n目前的進度不會保留。"
+    );
+
+    if(yes){
+
+        localStorage.removeItem(
+            "midnight404_save"
+        );
+
+        newGame();
+    }
+}
+
+
+/* =========================
+   隱藏結局條件
+========================= */
+
+document.addEventListener("keydown",function(e){
+
+    /*
+       輸入 404 可以測試隱藏結局
+    */
+
+    if(e.key==="4"){
+
+        if(!game.flags.secretFound){
+
+            /*
+              連續按三次4
+            */
+
+            if(!window.fourCount){
+                window.fourCount=0;
+            }
+
+            window.fourCount++;
+
+            if(window.fourCount>=3){
+
+                window.fourCount=0;
+
+                secretEnding();
+
+            }
+        }
+    }
+
+});
+
+
+/* =========================
+   初始化
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
