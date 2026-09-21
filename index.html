@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>不要相信遊戲</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    background:#05050b;
+    color:#fff;
+    font-family:"Microsoft JhengHei",Arial,sans-serif;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+    touch-action:manipulation;
+}
+
+#app{
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 15% 20%,rgba(103,67,255,.16),transparent 32%),
+        radial-gradient(circle at 85% 80%,rgba(0,190,255,.10),transparent 32%),
+        #05050b;
+}
+
+#app:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:.35;
+    background-image:
+        linear-gradient(rgba(130,100,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(130,100,255,.045) 1px,transparent 1px);
+    background-size:36px 36px;
+}
+
+/* =========================
+   開始畫面
+========================= */
+
+.screen{
+    width:min(900px,92%);
+    min-height:580px;
+    margin:40px auto;
+    padding:50px 35px;
+    border:1px solid rgba(145,125,255,.22);
+    border-radius:28px;
+    background:rgba(12,10,24,.88);
+    backdrop-filter:blur(18px);
+    box-shadow:0 0 70px rgba(90,60,255,.12);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
+
+.logo{
+    color:#9582ff;
+    letter-spacing:5px;
+    font-size:12px;
+    margin-bottom:20px;
+}
+
+h1{
+    margin:0;
+    font-size:clamp(38px,8vw,72px);
+    letter-spacing:7px;
+    text-shadow:
+        0 0 20px rgba(130,100,255,.8),
+        0 0 50px rgba(90,60,255,.25);
+}
+
+.subtitle{
+    margin-top:25px;
+    max-width:580px;
+    color:#aaa5bf;
+    line-height:2;
+    font-size:15px;
+}
+
+.warning{
+    margin-top:20px;
+    color:#ff718f;
+    font-size:13px;
+}
+
+.mainBtn{
+    margin-top:35px;
+    min-height:52px;
+    padding:0 42px;
+    border:0;
+    border-radius:14px;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    background:linear-gradient(135deg,#684cff,#a266ff);
+    box-shadow:0 0 28px rgba(116,78,255,.35);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.mainBtn:active{
+    transform:scale(.96);
+}
+
+.smallInfo{
+    margin-top:22px;
+    color:#66627a;
+    font-size:12px;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    width:min(900px,92%);
+    margin:18px auto 0;
+    display:none;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+    position:relative;
+    z-index:5;
+}
+
+.stat{
+    min-width:0;
+    padding:10px 6px;
+    text-align:center;
+    border-radius:13px;
+    border:1px solid rgba(145,125,255,.18);
+    background:rgba(15,12,30,.82);
+}
+
+.statTitle{
+    color:#68637e;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.statValue{
+    margin-top:4px;
+    font-size:16px;
+    font-weight:bold;
+}
+
+/* =========================
+   遊戲區
+========================= */
+
+#gameArea{
+    width:min(900px,92%);
+    margin:20px auto;
+    padding-bottom:30px;
+    display:none;
+    position:relative;
+    z-index:2;
+}
+
+.levelInfo{
+    text-align:center;
+}
+
+.levelNo{
+    color:#907cff;
+    font-size:12px;
+    letter-spacing:4px;
+}
+
+.levelTitle{
+    margin-top:10px;
+    font-size:clamp(24px,6vw,35px);
+}
+
+.instruction{
+    max-width:650px;
+    margin:12px auto 0;
+    color:#aaa5bd;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.hintText{
+    display:inline-block;
+    margin-top:12px;
+    padding:7px 12px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.08);
+    color:#6d6881;
+    font-size:11px;
+}
+
+#playArea{
+    width:100%;
+    min-height:390px;
+    margin-top:18px;
+    padding:15px;
+    position:relative;
+    overflow:hidden;
+    border-radius:22px;
+    border:1px solid rgba(145,125,255,.16);
+    background:rgba(7,6,15,.72);
+}
+
+/* =========================
+   通用按鈕
+========================= */
+
+.gameBtn{
+    min-width:110px;
+    min-height:48px;
+    padding:10px 20px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.14);
+    color:#fff;
+    background:#19162b;
+    cursor:pointer;
+    font-size:15px;
+    transition:.18s;
+}
+
+.gameBtn:active{
+    transform:scale(.94);
+}
+
+.purple{
+    background:linear-gradient(135deg,#5f47d8,#9562ef);
+}
+
+.red{
+    background:linear-gradient(135deg,#9d2348,#dc4d73);
+}
+
+.green{
+    background:linear-gradient(135deg,#08775b,#2abb91);
+}
+
+.blue{
+    background:linear-gradient(135deg,#225caa,#368edb);
+}
+
+.yellow{
+    background:linear-gradient(135deg,#a27716,#d9ae3d);
+}
+
+/* =========================
+   特殊元件
+========================= */
+
+.bigText{
+    text-align:center;
+    font-size:28px;
+    margin-top:120px;
+}
+
+.sequence{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:120px;
+}
+
+.memoryGrid{
+    display:grid;
+    grid-template-columns:repeat(3,70px);
+    justify-content:center;
+    gap:10px;
+    margin-top:90px;
+}
+
+.memoryCell{
+    width:70px;
+    height:70px;
+    border-radius:12px;
+    background:#161326;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.memoryCell.active{
+    background:#8d72ff;
+    box-shadow:0 0 30px rgba(130,100,255,.8);
+}
+
+.target{
+    position:absolute;
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    border:0;
+    background:#8b70ff;
+    box-shadow:0 0 30px rgba(130,100,255,.8);
+}
+
+.center{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+.fakeSystem{
+    text-align:center;
+    margin-top:120px;
+    color:#ff617e;
+    font-family:monospace;
+    font-size:18px;
+}
+
+.inputBox{
+    display:block;
+    width:min(260px,80%);
+    margin:80px auto 15px;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid rgba(145,125,255,.25);
+    background:#0d0b18;
+    color:white;
+    text-align:center;
+    font-size:18px;
+    outline:none;
+}
+
+.inputBox:focus{
+    border-color:#8c72ff;
+}
+
+.feedback{
+    text-align:center;
+    margin-top:12px;
+    color:#8e88a4;
+    font-size:13px;
+}
+
+/* =========================
+   提示
+========================= */
+
+#hintBtn{
+    display:none;
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    z-index:20;
+    min-height:44px;
+    padding:0 16px;
+    border-radius:12px;
+    border:1px solid rgba(145,125,255,.25);
+    color:#aaa5bd;
+    background:rgba(18,15,35,.95);
+    cursor:pointer;
+}
+
+/* =========================
+   結束畫面
+========================= */
+
+#endScreen{
+    display:none;
+}
+
+.endTitle{
+    font-size:clamp(36px,9vw,55px);
+}
+
+.endText{
+    margin-top:18px;
+    color:#aaa5bd;
+    line-height:2;
+}
+
+/* =========================
+   手機
+========================= */
+
+@media(max-width:600px){
+
+    .screen{
+        min-height:calc(100vh - 30px);
+        margin:15px auto;
+        padding:35px 20px;
+        border-radius:22px;
+    }
+
+    h1{
+        font-size:42px;
+        letter-spacing:4px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+
+    #hud{
+        width:94%;
+        margin-top:10px;
+    }
+
+    .stat{
+        padding:8px 3px;
+    }
+
+    .statValue{
+        font-size:14px;
+    }
+
+    #gameArea{
+        width:94%;
+        margin-top:15px;
+    }
+
+    #playArea{
+        min-height:430px;
+        border-radius:18px;
+        padding:10px;
+    }
+
+    .gameBtn{
+        min-width:105px;
+        min-height:50px;
+        padding:10px 13px;
+        font-size:14px;
+    }
+
+    .memoryGrid{
+        grid-template-columns:repeat(3,60px);
+    }
+
+    .memoryCell{
+        width:60px;
+        height:60px;
+    }
+
+    #hintBtn{
+        right:10px;
+        bottom:10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- =========================
+     開始
+========================= -->
+
+<div id="startScreen" class="screen">
+
+    <div class="logo">SYSTEM // UNTRUSTED</div>
+
+    <h1>不要相信遊戲</h1>
+
+    <div class="subtitle">
+        20 個關卡。<br>
+        沒有任何一關會直接告訴你答案。<br>
+        有時候你需要觀察，有時候需要記憶，<br>
+        有時候……你甚至不能相信自己的直覺。
+    </div>
+
+    <div class="warning">
+        ⚠ 遊戲會欺騙你，但一定會留下線索。
+    </div>
+
+    <button class="mainBtn" id="startBtn">
+        開始遊戲
+    </button>
+
+    <div class="smallInfo">
+        電腦：滑鼠＋鍵盤　｜　手機：觸控
+    </div>
+
+</div>
+
+
+<!-- =========================
+     HUD
+========================= -->
+
+<div id="hud">
+
+    <div class="stat">
+        <div class="statTitle">LEVEL</div>
+        <div class="statValue" id="levelText">1 / 20</div>
+    </div>
+
+    <div class="stat">
+        <div class="statTitle">SCORE</div>
+        <div class="statValue" id="scoreText">0</div>
+    </div>
+
+    <div class="stat">
+        <div class="statTitle">LIVES</div>
+        <div class="statValue" id="livesText">❤️❤️❤️</div>
+    </div>
+
+    <div class="stat">
+        <div class="statTitle">TIME</div>
+        <div class="statValue" id="timeText">30</div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     遊戲
+========================= -->
+
+<div id="gameArea">
+
+    <div class="levelInfo">
+
+        <div class="levelNo" id="levelNo">
+            LEVEL 01
+        </div>
+
+        <div class="levelTitle" id="levelTitle">
+            第一關
+        </div>
+
+        <div class="instruction" id="instruction">
+            載入中……
+        </div>
+
+        <div class="hintText" id="hintText">
+            提示：……
+        </div>
+
+    </div>
+
+    <div id="playArea"></div>
+
+</div>
+
+
+<!-- =========================
+     結束
+========================= -->
+
+<div id="endScreen" class="screen">
+
+    <div class="logo">SYSTEM // RESULT</div>
+
+    <div class="endTitle" id="endTitle">
+        遊戲結束
+    </div>
+
+    <div class="endText" id="endText"></div>
+
+    <button class="mainBtn" id="restartBtn">
+        再玩一次
+    </button>
+
+</div>
+
+
+<button id="hintBtn">
+    💡 使用提示
+</button>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   基本設定
+===================================================== */
+
+const TOTAL = 20;
+
+let level = 1;
+let score = 0;
+let lives = 3;
+let time = 30;
+
+let timer = null;
+let gameRunning = false;
+
+let cleanup = [];
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const startScreen = document.getElementById("startScreen");
+const endScreen = document.getElementById("endScreen");
+
+const hud = document.getElementById("hud");
+const gameArea = document.getElementById("gameArea");
+const playArea = document.getElementById("playArea");
+
+const levelText = document.getElementById("levelText");
+const scoreText = document.getElementById("scoreText");
+const livesText = document.getElementById("livesText");
+const timeText = document.getElementById("timeText");
+
+const levelNo = document.getElementById("levelNo");
+const levelTitle = document.getElementById("levelTitle");
+const instruction = document.getElementById("instruction");
+const hintText = document.getElementById("hintText");
+
+const hintBtn = document.getElementById("hintBtn");
+
+const endTitle = document.getElementById("endTitle");
+const endText = document.getElementById("endText");
+
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+
+/* =====================================================
+   按鈕
+===================================================== */
+
+startBtn.addEventListener("click",startGame);
+
+restartBtn.addEventListener("click",startGame);
+
+hintBtn.addEventListener("click",useHint);
+
+
+/* =====================================================
+   開始
+===================================================== */
+
+function startGame(){
+
+    stopEverything();
+
+    level = 1;
+    score = 0;
+    lives = 3;
+    time = 30;
+
+    gameRunning = true;
+
+    startScreen.style.display = "none";
+    endScreen.style.display = "none";
+
+    hud.style.display = "grid";
+    gameArea.style.display = "block";
+    hintBtn.style.display = "block";
+
+    updateHUD();
+    loadLevel();
+}
+
+
+/* =====================================================
+   清理
+===================================================== */
+
+function stopEverything(){
+
+    clearInterval(timer);
+    timer = null;
+
+    cleanup.forEach(fn=>{
+        try{ fn(); }catch(e){}
+    });
+
+    cleanup = [];
+
+    playArea.innerHTML = "";
+}
+
+
+/* =====================================================
+   HUD
+===================================================== */
+
+function updateHUD(){
+
+    levelText.textContent = level + " / " + TOTAL;
+
+    scoreText.textContent = score;
+
+    livesText.textContent =
+        "❤️".repeat(Math.max(0,lives)) +
+        "🖤".repeat(Math.max(0,3-lives));
+
+    timeText.textContent = Math.max(0,time);
+}
+
+
+/* =====================================================
+   關卡
+===================================================== */
+
+function loadLevel(){
+
+    if(!gameRunning)return;
+
+    stopEverything();
+
+    time = 30;
+
+    updateHUD();
+
+    levelNo.textContent =
+        "LEVEL " + String(level).padStart(2,"0");
+
+    const data = levels[level-1];
+
+    levelTitle.textContent = data.title;
+    instruction.textContent = data.instruction;
+    hintText.textContent = data.hint;
+
+    data.start();
+
+    startTimer();
+}
+
+
+/* =====================================================
+   計時
+===================================================== */
+
+function startTimer(){
+
+    clearInterval(timer);
+
+    timer = setInterval(()=>{
+
+        if(!gameRunning)return;
+
+        time--;
+
+        updateHUD();
+
+        if(time <= 0){
+
+            clearInterval(timer);
+
+            loseLife("時間到了");
+
+        }
+
+    },1000);
+}
+
+
+/* =====================================================
+   成功
+===================================================== */
+
+function success(){
+
+    if(!gameRunning)return;
+
+    clearInterval(timer);
+
+    score += 100 + time * 5;
+
+    nextLevel();
+}
+
+
+/* =====================================================
+   下一關
+===================================================== */
+
+function nextLevel(){
+
+    if(level >= TOTAL){
+
+        win();
+        return;
+
+    }
+
+    level++;
+
+    setTimeout(()=>{
+
+        if(gameRunning){
+            loadLevel();
+        }
+
+    },450);
+}
+
+
+/* =====================================================
+   失敗
+===================================================== */
+
+function loseLife(reason){
+
+    if(!gameRunning)return;
+
+    lives--;
+
+    updateHUD();
+
+    if(lives <= 0){
+
+        gameOver();
+
+        return;
+    }
+
+    setTimeout(()=>{
+
+        if(gameRunning){
+
+            loadLevel();
+
+        }
+
+    },600);
+}
+
+
+/* =====================================================
+   提示
+===================================================== */
+
+function useHint(){
+
+    if(!gameRunning)return;
+
+    score = Math.max(0,score-30);
+
+    updateHUD();
+
+    const data = levels[level-1];
+
+    hintText.textContent = "💡 " + data.realHint;
+
+}
+
+
+/* =====================================================
+   按鈕建立
+===================================================== */
+
+function button(text,className,action){
+
+    const b = document.createElement("button");
+
+    b.type = "button";
+    b.className = "gameBtn " + (className || "");
+    b.textContent = text;
+
+    b.addEventListener("click",()=>{
+
+        if(gameRunning){
+            action();
+        }
+
+    });
+
+    playArea.appendChild(b);
+
+    return b;
+}
+
+
+/* =====================================================
+   20 關
+===================================================== */
+
+const levels = [
+
+/* 1 */
+{
+    title:"相信誰？",
+
+    instruction:"兩句話只有一句是真的。請點擊「真的」那一個。",
+
+    hint:"提示：仔細看兩個按鈕。",
+
+    realHint:"真正的答案是綠色按鈕。",
+
+    start(){
+
+        button("我是真的","red",()=>loseLife("你相信了錯的東西。"));
+
+        button("我才是真的","green",success);
+
+    }
+},
+
+
+/* 2 */
+{
+    title:"顏色陷阱",
+
+    instruction:"請點擊「藍色」。不要相信文字的顏色。",
+
+    hint:"提示：看按鈕實際呈現的顏色。",
+
+    realHint:"答案是實際呈現藍色的按鈕。",
+
+    start(){
+
+        button("藍色","red",()=>loseLife());
+
+        button("紅色","blue",success);
+
+        button("綠色","green",()=>loseLife());
+
+    }
+},
+
+
+/* 3 */
+{
+    title:"找不同",
+
+    instruction:"四個符號看起來幾乎一樣，找出唯一不同的。",
+
+    hint:"提示：不要只看位置。",
+
+    realHint:"中間偏右的符號不同。",
+
+    start(){
+
+        const symbols=["◆","◆","◆","◇","◆"];
+
+        symbols.forEach((s,i)=>{
+
+            const b=button(
+                s,
+                i===3?"green":"purple",
+                ()=>{
+                    if(i===3)success();
+                    else loseLife();
+                }
+            );
+
+            b.style.margin="8px";
+
+        });
+
+    }
+},
+
+
+/* 4 */
+{
+    title:"記憶",
+
+    instruction:"紫色格子會出現 2 秒。消失後點出剛才亮起的位置。",
+
+    hint:"提示：先記住位置。",
+
+    realHint:"這一關考記憶，不是速度。",
+
+    start(){
+
+        const grid=document.createElement("div");
+
+        grid.className="memoryGrid";
+
+        playArea.appendChild(grid);
+
+        let correct=Math.floor(Math.random()*9);
+
+        for(let i=0;i<9;i++){
+
+            const cell=document.createElement("button");
+
+            cell.className="memoryCell";
+            cell.type="button";
+
+            grid.appendChild(cell);
+
+            if(i===correct){
+
+                cell.classList.add("active");
+
+                setTimeout(()=>{
+
+                    cell.classList.remove("active");
+
+                },1800);
+
+            }
+
+            cell.addEventListener("click",()=>{
+
+                if(i===correct)success();
+                else loseLife();
+
+            });
+
+        }
+
+    }
+},
+
+
+/* 5 */
+{
+    title:"數列",
+
+    instruction:"找出下一個數字：2、4、8、16、？",
+
+    hint:"提示：不要被按鈕顏色影響。",
+
+    realHint:"每一次都乘以 2。",
+
+    start(){
+
+        ["24","30","32","36"].forEach(n=>{
+
+            button(
+                n,
+                n==="32"?"green":"purple",
+                ()=>{
+                    if(n==="32")success();
+                    else loseLife();
+                }
+            ).style.margin="8px";
+
+        });
+
+    }
+},
+
+
+/* 6 */
+{
+    title:"不要太快",
+
+    instruction:"請在倒數結束前的最後 3 秒內點擊按鈕。",
+
+    hint:"提示：太早按也會失敗。",
+
+    realHint:"等到剩 3 秒、2 秒或 1 秒再按。",
+
+    start(){
+
+        const b=button(
+            "現在不要按",
+            "purple",
+            ()=>{
+                if(time<=3)success();
+                else loseLife();
+            }
+        );
+
+        b.style.marginTop="150px";
+
+    }
+},
+
+
+/* 7 */
+{
+    title:"鍵盤密碼",
+
+    instruction:"畫面會告訴你要按哪個鍵。",
+
+    hint:"提示：手機玩家可以直接點畫面上的鍵。",
+
+    realHint:"電腦按鍵盤 Q；手機點 Q。",
+
+    start(){
+
+        const text=document.createElement("div");
+
+        text.className="bigText";
+        text.textContent="請按：Q";
+
+        playArea.appendChild(text);
+
+        const b=button("Q","green",success);
+
+        b.style.display="block";
+        b.style.margin="20px auto";
+
+        function key(e){
+
+            if(e.key.toLowerCase()==="q"){
+
+                success();
+
+            }
+
+        }
+
+        document.addEventListener("keydown",key);
+
+        cleanup.push(()=>document.removeEventListener("keydown",key));
+
+    }
+},
+
+
+/* 8 */
+{
+    title:"假的錯誤",
+
+    instruction:"系統顯示錯誤，但畫面上有一個真正的繼續按鈕。",
+
+    hint:"提示：不要被紅色文字嚇到。",
+
+    realHint:"點擊「繼續」。",
+
+    start(){
+
+        const error=document.createElement("div");
+
+        error.className="fakeSystem";
+
+        error.textContent="ERROR 404";
+
+        playArea.appendChild(error);
+
+        button(
+            "繼續",
+            "green",
+            success
+        ).style.display="block";
+
+        playArea.lastChild.style.margin="25px auto";
+
+    }
+},
+
+
+/* 9 */
+{
+    title:"順序",
+
+    instruction:"依序點擊 3 → 1 → 4 → 2。",
+
+    hint:"提示：順序才是答案。",
+
+    realHint:"正確順序：3、1、4、2。",
+
+    start(){
+
+        const order=[3,1,4,2];
+
+        let index=0;
+
+        [1,2,3,4].forEach(n=>{
+
+            const b=button(
+                String(n),
+                "purple",
+                ()=>{
+
+                    if(n===order[index]){
+
+                        index++;
+
+                        if(index===order.length){
+
+                            success();
+
+                        }
+
+                    }else{
+
+                        loseLife();
+
+                    }
+
+                }
+            );
+
+            b.style.margin="8px";
+
+        });
+
+    }
+},
+
+
+/* 10 */
+{
+    title:"假的通關",
+
+    instruction:"其中一個按鈕寫著「通關」。你真的要相信它嗎？",
+
+    hint:"提示：回想這個遊戲的名字。",
+
+    realHint:"不要選寫著「通關」的紅色按鈕。",
+
+    start(){
+
+        button(
+            "通關",
+            "red",
+            ()=>loseLife()
+        );
+
+        button(
+            "繼續調查",
+            "green",
+            success
+        );
+
+    }
+},
+
+
+/* 11 */
+{
+    title:"消失",
+
+    instruction:"記住黃色按鈕的位置，它很快會消失。",
+
+    hint:"提示：先觀察，再操作。",
+
+    realHint:"原本黃色按鈕所在的位置。",
+
+    start(){
+
+        const b=button(
+            "★",
+            "yellow",
+            success
+        );
+
+        b.style.position="absolute";
+        b.style.left="50%";
+        b.style.top="45%";
+        b.style.transform="translate(-50%,-50%)";
+
+        setTimeout(()=>{
+
+            b.style.opacity="0";
+
+            setTimeout(()=>{
+
+                b.style.pointerEvents="none";
+
+                const fake=button(
+                    "★",
+                    "purple",
+                    ()=>{
+                        const rect=b.getBoundingClientRect();
+                        const fr=playArea.getBoundingClientRect();
+
+                        const x=fr.width/2;
+
+                        if(Math.abs((fr.left+x)-(rect.left+rect.width/2))<100){
+                            success();
+                        }else{
+                            loseLife();
+                        }
+                    }
+                );
+
+                fake.style.position="absolute";
+                fake.style.left="15%";
+                fake.style.top="25%";
+
+            },200);
+
+        },1600);
+
+    }
+},
+
+
+/* 12 */
+{
+    title:"不要點擊紅色",
+
+    instruction:"這次請遵守指示：不要點擊紅色。",
+
+    hint:"提示：這一關可以相信提示。",
+
+    realHint:"點綠色。",
+
+    start(){
+
+        button("紅色","red",()=>loseLife());
+
+        button("綠色","green",success);
+
+    }
+},
+
+
+/* 13 */
+{
+    title:"找出空白",
+
+    instruction:"其中一個位置什麼都沒有。點擊那個位置。",
+
+    hint:"提示：空白本身也是答案。",
+
+    realHint:"點擊中間偏右的空白區域。",
+
+    start(){
+
+        for(let i=0;i<4;i++){
+
+            const b=button(
+                i===2?"":"●",
+                i===2?"green":"purple",
+                ()=>{
+                    if(i===2)success();
+                    else loseLife();
+                }
+            );
+
+            b.style.margin="8px";
+
+        }
+
+    }
+},
+
+
+/* 14 */
+{
+    title:"反應",
+
+    instruction:"當畫面出現「現在！」時立刻點擊按鈕。",
+
+    hint:"提示：現在還不是時候。",
+
+    realHint:"等文字變成「現在！」。",
+
+    start(){
+
+        const b=button(
+            "等待",
+            "purple",
+            ()=>{
+                if(b.textContent==="現在！"){
+                    success();
+                }else{
+                    loseLife();
+                }
+            }
+        );
+
+        b.style.display="block";
+        b.style.margin="150px auto";
+
+        setTimeout(()=>{
+
+            if(gameRunning && level===14){
+
+                b.textContent="現在！";
+                b.className="gameBtn green";
+
+            }
+
+        },2500);
+
+    }
+},
+
+
+/* 15 */
+{
+    title:"鏡像",
+
+    instruction:"左右兩邊的圖案中，只有一邊與上方符號完全相同。",
+
+    hint:"提示：注意方向。",
+
+    realHint:"上方是「◀」，所以答案也是左箭頭。",
+
+    start(){
+
+        const top=document.createElement("div");
+
+        top.className="bigText";
+        top.textContent="◀";
+
+        top.style.marginTop="45px";
+
+        playArea.appendChild(top);
+
+        button("◀","green",success);
+
+        button("▶","red",()=>loseLife());
+
+    }
+},
+
+
+/* 16 */
+{
+    title:"數字陷阱",
+
+    instruction:"哪一個數字不是質數？",
+
+    hint:"提示：四個數字中只有一個不是質數。",
+
+    realHint:"9 可以被 3 整除。",
+
+    start(){
+
+        ["7","11","13","9"].forEach(n=>{
+
+            button(
+                n,
+                n==="9"?"green":"purple",
+                ()=>{
+                    if(n==="9")success();
+                    else loseLife();
+                }
+            );
+
+        });
+
+    }
+},
+
+
+/* 17 */
+{
+    title:"假提示",
+
+    instruction:"畫面提示寫著：『不要點綠色』。",
+
+    hint:"提示：想想前面第 12 關。",
+
+    realHint:"這一次提示是假的，請點綠色。",
+
+    start(){
+
+        button(
+            "紅色",
+            "red",
+            ()=>loseLife()
+        );
+
+        button(
+            "綠色",
+            "green",
+            success
+        );
+
+    }
+},
+
+
+/* 18 */
+{
+    title:"最後的記憶",
+
+    instruction:"依序記住四個符號，接著按照相反順序點擊。",
+
+    hint:"提示：畫面會先展示順序。",
+
+    realHint:"記住順序，然後反過來點。",
+
+    start(){
+
+        const seq=["▲","●","◆","★"];
+
+        const text=document.createElement("div");
+
+        text.className="bigText";
+        text.textContent=seq.join(" ");
+
+        playArea.appendChild(text);
+
+        setTimeout(()=>{
+
+            text.textContent="請反向點擊";
+
+            let index=seq.length-1;
+
+            seq.forEach(symbol=>{
+
+                const b=button(
+                    symbol,
+                    "purple",
+                    ()=>{
+
+                        if(symbol===seq[index]){
+
+                            index--;
+
+                            if(index<0){
+
+                                success();
+
+                            }
+
+                        }else{
+
+                            loseLife();
+
+                        }
+
+                    }
+                );
+
+                b.style.margin="8px";
+
+            });
+
+        },2200);
+
+    }
+},
+
+
+/* 19 */
+{
+    title:"假的勝利",
+
+    instruction:"系統宣布你已經通關。你要直接相信嗎？",
+
+    hint:"提示：最後一關之前，遊戲最喜歡騙人。",
+
+    realHint:"點「繼續」。",
+
+    start(){
+
+        const text=document.createElement("div");
+
+        text.className="bigText";
+
+        text.innerHTML=
+            "恭喜你！<br><br>你已經通關。";
+
+        playArea.appendChild(text);
+
+        button(
+            "結束遊戲",
+            "red",
+            ()=>loseLife()
+        );
+
+        button(
+            "我不相信",
+            "green",
+            success
+        );
+
+    }
+},
+
+
+/* 20 */
+{
+    title:"真正的最後一關",
+
+    instruction:"你已經學會不要相信遊戲。現在，請點擊真正的答案。",
+
+    hint:"提示：回想整個遊戲。",
+
+    realHint:"最後一關沒有文字陷阱，真正答案是「相信自己的判斷」。",
+
+    start(){
+
+        button(
+            "相信遊戲",
+            "red",
+            ()=>loseLife()
+        );
+
+        button(
+            "相信自己的判斷",
+            "green",
+            success
+        );
+
+    }
+}
+
+];
+
+
+/* =====================================================
+   遊戲結束
+===================================================== */
+
+function gameOver(){
+
+    gameRunning=false;
+
+    stopEverything();
+
+    hud.style.display="none";
+    gameArea.style.display="none";
+    hintBtn.style.display="none";
+
+    endScreen.style.display="flex";
+
+    endTitle.textContent="遊戲結束";
+
+    endText.innerHTML=
+        "你在第 <b>"+level+"</b> 關失敗了。<br>"+
+        "最終分數：<b>"+score+"</b><br><br>"+
+        "你被遊戲騙到了。";
+}
+
+
+/* =====================================================
+   通關
+===================================================== */
+
+function win(){
+
+    gameRunning=false;
+
+    stopEverything();
+
+    hud.style.display="none";
+    gameArea.style.display="none";
+    hintBtn.style.display="none";
+
+    endScreen.style.display="flex";
+
+    endTitle.textContent="你通關了";
+
+    endText.innerHTML=
+        "20 關全部完成。<br><br>"+
+        "最終分數：<b>"+score+"</b><br>"+
+        "你已經學會一件事——<br>"+
+        "<b>不要相信遊戲。</b>";
+}
+
+</script>
+
+</body>
+</html>
